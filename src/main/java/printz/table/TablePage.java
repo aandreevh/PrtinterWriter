@@ -1,5 +1,6 @@
 package printz.table;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.List;
 public class TablePage {
 
 
-    private List<TableRow> rowList;
+    private ArrayList<TableRow> rowList;
 
     private void setRowList(Collection<TableRow> rowList){
-        this.rowList = Collections.unmodifiableList(List.copyOf(rowList));
+        this.rowList =new ArrayList<>(rowList);
     }
 
-    public Collection<TableRow> getRowList(){
+    public ArrayList<TableRow> getRowList(){
         return rowList;
     }
 

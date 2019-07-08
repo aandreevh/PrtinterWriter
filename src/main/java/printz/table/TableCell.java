@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 
 public class TableCell {
 
-    private List<String> content ;
+    private ArrayList<String> content ;
 
     private void setContent(Collection<String> content){
-        this.content = Collections.unmodifiableList(List.copyOf(content));
+        this.content = new ArrayList<>(content);
     }
 
-    public Collection<String> getContent(){
+    public ArrayList<String> getContent(){
         return content;
     }
 

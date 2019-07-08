@@ -3,10 +3,10 @@ package printz.table;
 import printz.Entry;
 import printz.Field;
 import printz.TableObject;
+import printz.Value;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class TableBuilder {
     private TableObject tobj;
@@ -47,12 +47,12 @@ public final class TableBuilder {
     }
 
 
-    public TableCell createTableColumn(String string,int field){
+    private TableCell createTableColumn(String string,int field){
         Field f = getTableObject().getHeader().getField(field);
 
         final String lineBreaker=String.valueOf(getTableObject().getHeader().getPage().getLineBreaker());
         String[] strings = string.trim().split(lineBreaker);
-        List<String> readyStrings = new LinkedList<>();
+        ArrayList<String> readyStrings = new ArrayList<>();
         String cstring = "";
         for(String cs : strings){
             if(cstring.equals("")){
@@ -78,19 +78,19 @@ public final class TableBuilder {
 
         return new TableCell(readyStrings);
     }
-    public TableRow createTableRow(String[] strings) {
-        List<TableCell> columns = new LinkedList<>();
-        List<TableCell> columns2 = new LinkedList<>();
+    private TableRow createTableRow(ArrayList<String> strings) {
+        ArrayList<TableCell> columns = new ArrayList<>();
+        ArrayList<TableCell> columns2 = new ArrayList<>();
 
         //Add regularly
-        for(int i=0;i<strings.length;i++)
-            columns.add(createTableColumn(strings[i],i));
+        for(int i=0;i<strings.size();i++)
+            columns.add(createTableColumn(strings.get(i),i));
 
         //Modify height to align
         int max = columns.stream().map(a-> a.getContent().size()).max((a,b)->a-b).orElse(0);
 
         for(int i=0;i<columns.size();i++) {
-            List<String> str = new LinkedList<>(columns.get(i).getContent());
+            ArrayList<String> str = new ArrayList<>(columns.get(i).getContent());
             int diff = max - str.size();
             if (diff > 0) {
                 Field f = getTableObject().getHeader().getField(i);
@@ -117,19 +117,48 @@ public final class TableBuilder {
         return new TableRow(columns2);
     }
 
-    Table build() throws Exception{
+    public Table build() {
 
-        List<TablePage> tablePages = new LinkedList<>();
-        List<TableRow>  pageRows = new LinkedList<>();
+        ArrayList<TablePage> tablePages = new ArrayList<>();
+        ArrayList<TableRow>  pageRows = new ArrayList<>();
 
         final int maxPageHeight = tobj.getHeader().getPage().getHeight();
         int currentPageHeight = 0;
-
-        for(Entry data : tobj.getData()){
+        int lastID = -1;
+        Entry[] entries = getTableObject().getData().toArray(new Entry[getTableObject().getData().size()]);
+        for(int i=0;i<entries.length;i++){
+            Entry entry = entries[i];
             if(currentPageHeight == 0){
+                TableRow row = createTableRow(new ArrayList<>
+                        (getTableObject().getHeader().getFields().stream().map(Field::getName)
+                        .collect(Collectors.toList())));
+
+                int h = row.getHeight();
+                if(h+2 > maxPageHeight) throw new IndexOutOfBoundsException("Cannot fit header into table !");
+                pageRows.add(row);
+                currentPageHeight += h+2;
+
             }
+
+            TableRow row = createTableRow(new ArrayList<>
+                    (entry.getValues().stream().map(Value::getValue)
+                            .collect(Collectors.toList())));
+                int h = row.getHeight();
+                if(h +1 +currentPageHeight > maxPageHeight){
+                    if(lastID == i) throw  new IndexOutOfBoundsException("Cannot fit row !");
+                    lastID = i--;
+                    tablePages.add(new TablePage(pageRows));
+                    pageRows = new ArrayList<>();
+                    currentPageHeight = 0;
+                }else {
+                    currentPageHeight += h+1;
+                    pageRows.add(row);
+                }
+
         }
 
-        return null;
+        tablePages.add(new TablePage(pageRows));
+
+        return new Table(tablePages,getTableObject().getHeader());
     }
 }
