@@ -1,0 +1,38 @@
+<object>
+
+    <header>
+
+        <page>
+
+            <height>150</height>
+
+        </page>
+
+        <fields>
+            <field vertical-align="top" horizontal-align="right" width="5">F1</field>
+            <field width="5">F2</field>
+            <field width="5" vertical-align="bottom">F3</field>
+            <field width="10">F4</field>
+        </fields>
+
+    </header>
+
+    <data>
+
+        <entry>
+            <value>F1 value</value>
+            <value>F2 value</value>
+            <value>F3 value</value>
+            <value>F4 value</value>
+        </entry>
+
+        <entry>
+            <value>F1 value</value>
+            <value>F2 value</value>
+            <value>F3 value</value>
+            <value>F4 value</value>
+        </entry>
+
+    </data>
+
+</object>

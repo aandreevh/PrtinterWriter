@@ -1,0 +1,73 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="object">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="header">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="page">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element type="xs:byte" name="escape-line" minOccurs="0" maxOccurs="1" />
+                                        <xs:element type="xs:byte" name="escape-page" minOccurs="0" maxOccurs="1" />
+                                        <xs:element type="xs:byte" name="line-breaker" minOccurs="0" maxOccurs="1" />
+                                        <xs:element type="xs:integer" name="height" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="border" minOccurs="0" maxOccurs="1" >
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element type="xs:byte" name="horizontal"/>
+                                                    <xs:element type="xs:byte" name="vertical"/>
+                                                    <xs:element type="xs:byte" name="corner"/>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="fields">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="field" maxOccurs="unbounded" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute type="xs:string" name="vertical-align" use="optional"/>
+                                                        <xs:attribute type="xs:string" name="horizontal-align" use="optional"/>
+                                                        <xs:attribute type="xs:integer" name="padding" use="optional"/>
+                                                        <xs:attribute type="xs:integer" name="width"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="data">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="entry" maxOccurs="unbounded" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="value" maxOccurs="unbounded" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
